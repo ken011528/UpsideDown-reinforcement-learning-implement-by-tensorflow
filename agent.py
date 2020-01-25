@@ -117,109 +117,10 @@ class RL():
 			self.train_op=tf.compat.v1.train.AdamOptimizer(self.args.lr).minimize(self.loss)
 
 
-	def action_choice(self,s,c,dr,dh):
-		s=np.asarray(s,dtype=np.float32).reshape((1,self.n_s))
-		dr=np.asarray(dr).reshape((-1,1))
-		dh=np.asarray(dh).reshape((-1,1))
-		action = self.sess.run(self.a_out,{self.input_:s,self.d_r:dr,self.d_h:dh})
-		return action
 
 
-	def get_(self):
-		if self.init:
-			self.desire_r_init, self.desire_h_init=0,0
-			return 
-		h=[]
-		r=[]
-
-		for _ in range(self.args.generate_per_single_training):
-			epoides=self.dict.popitem()
-			h.append(len(epoides[1][0]))
-			r.append(epoides[0])
-
-		seleceted_eposide_len=np.mean(h)
-		seleceted_eposide_mean=np.random.uniform(low=np.mean(r),high=(np.mean(r)+np.std(r)))
-		self.desire_r_init,self.desire_h_init=seleceted_eposide_mean,seleceted_eposide_len
-
-	def feed(self):
-		self.get_()
-		self.dict.clear()
-		for _ in range(self.args.memory_thersold):
-			state,action,reward,total_reward=self.play()
-			self.dict.__setitem__(total_reward,(state,action,reward))
-		self.init=False
-
-	def play(self):
-		s=self.env.reset()
-		if self.ite_count==0:
-			self.sess.run(tf.compat.v1.global_variables_initializer())
-
-		state_list=[]
-		action_list=[]
-		reward_list=[]
-
-		reward_total=0
-		done=False
-
-		desire_h=self.desire_h_init
-		desire_r=self.desire_r_init
-
-		while not done:
-			c=np.asarray([desire_h,desire_r])
-
-			if self.init:
-				a=np.random.randint(self.n_a)
-			else:
-				a=self.action_choice(s,c,desire_r,desire_h)
-
-			s_,r,done,_=self.env.step(a)
-
-			state_list.append(s)
-			action_list.append(a)
-			reward_list.append(r)
-			reward_total+=r
-
-			desire_h=max(desire_h-1,1)
-			desire_r=min(desire_r-r,self.reward_)
-
-			s=s_
-
-			if done:
-					break
-		return state_list,action_list,reward_list,reward_total
 
 
-	def learn(self):
-		if self.ite_count==0:
-			self.sess.run(tf.compat.v1.global_variables_initializer())
-
-		memory_dic=dict(self.dict)
-		dic_value=list(memory_dic.values())
-
-		for _ in range(self.args.n_update_eposide):
-			state=[]
-			dr=[]
-			dh=[]
-			true_a=[]
-			c=[]
-			indices=np.random.choice(len(dic_value),self.args.batch_size,replace=True) ######### random sample which eposide will use.
-			tran=[dic_value[i] for i in indices]
-			random_index=[np.random.choice(len(e[0])-2,1)  for e in tran]
-			for idx_,tran_ in zip(random_index,tran):
-				state.append(tran_[0][idx_[0]])
-				dr.append(np.sum(tran_[2][idx_[0]:]))
-				dh.append(len(tran_[0])-idx_[0])
-				true_a.append(tran_[1][idx_[0]])
-				c.append([np.sum(tran_[2][idx_[0]:]),len(tran_[0])-idx_[0]])
-
-
-			command_ = np.asarray(c,dtype=np.float32).reshape(-1,2)
-			s_t=np.asarray(state,dtype=np.float32)
-			action=np.asarray([a_ for a_ in true_a])
-			dr=np.asarray(dr,dtype=np.float32).reshape((-1,1))
-			dh=np.asarray(dh,dtype=np.float32).reshape((-1,1))
-			_,loss=self.sess.run([self.train_op,self.loss],{self.input_:s_t,self.c_in:command_,
-				self.a:action,self.d_r:dr,self.d_h:dh})
 
 	def eval(self,eval_ite):
 		test_reward=[]
