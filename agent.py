@@ -117,40 +117,6 @@ class RL():
 			self.train_op=tf.compat.v1.train.AdamOptimizer(self.args.lr).minimize(self.loss)
 
 
-
-
-	def learn(self):
-		if self.ite_count==0:
-			self.sess.run(tf.compat.v1.global_variables_initializer())
-
-		memory_dic=dict(self.dict)
-		dic_value=list(memory_dic.values())
-
-		for _ in range(self.args.n_update_eposide):
-			state=[]
-			dr=[]
-			dh=[]
-			true_a=[]
-			c=[]
-			indices=np.random.choice(len(dic_value),self.args.batch_size,replace=True) ######### random sample which eposide will use.
-			tran=[dic_value[i] for i in indices]
-			random_index=[np.random.choice(len(e[0])-2,1)  for e in tran]
-			for idx_,tran_ in zip(random_index,tran):
-				state.append(tran_[0][idx_[0]])
-				dr.append(np.sum(tran_[2][idx_[0]:]))
-				dh.append(len(tran_[0])-idx_[0])
-				true_a.append(tran_[1][idx_[0]])
-				c.append([np.sum(tran_[2][idx_[0]:]),len(tran_[0])-idx_[0]])
-
-
-			command_ = np.asarray(c,dtype=np.float32).reshape(-1,2)
-			s_t=np.asarray(state,dtype=np.float32)
-			action=np.asarray([a_ for a_ in true_a])
-			dr=np.asarray(dr,dtype=np.float32).reshape((-1,1))
-			dh=np.asarray(dh,dtype=np.float32).reshape((-1,1))
-			_,loss=self.sess.run([self.train_op,self.loss],{self.input_:s_t,self.c_in:command_,
-				self.a:action,self.d_r:dr,self.d_h:dh})
-
 	def eval(self,eval_ite):
 		test_reward=[]
 		test_step=[]
