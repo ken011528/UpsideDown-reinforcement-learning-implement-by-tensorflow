@@ -243,8 +243,9 @@ class RL():
 				score=self.eval(self.ite_count-1)
 				test.append(score)
 				if len(test) % self.release == 0 or (self.ite_count-1)==0:
-					self.saver.save(self.sess,r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training))
-					np.save(r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_reward_test_{}_{}__tensorflow_categorical_1.npy'.format(self.save_index,self.args.generate_per_single_training),test)
+# 					self.saver.save(self.sess,r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training))
+					self.saver.save(self.sess,self.args.save_path+'\\'+'tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training)
+# 					np.save(r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_reward_test_{}_{}__tensorflow_categorical_1.npy'.format(self.save_index,self.args.generate_per_single_training),test)
 					print('saved')
 					self.save_index+=1
 					test=[]
