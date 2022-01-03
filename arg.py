@@ -13,6 +13,7 @@ parser.add_argument('--n_update_eposide',type=int,default=200)								#### How m
 parser.add_argument('--eval_step',type=float,default=20)									### Use how many step used in evalute
 parser.add_argument('--eval_step_every_k_step',type=int,default=5)							### Every K step to evalute
 parser.add_argument('--seed',type=int,default=123)											### Seed
+parser.add_argument('--save',type = str, default='')
 parser.add_argument('--Path',type=str,default=r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold/')
 
 
