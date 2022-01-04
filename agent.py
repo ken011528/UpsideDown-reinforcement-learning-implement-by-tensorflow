@@ -252,16 +252,16 @@ class RL():
 					print((time.time()-start_)/60)
 					start_ = time.time()
 
-sess=tf.compat.v1.Session()
-# env=gym.make('LunarLander-v2')
-n_s=env.observation_space.shape[0]
-n_a=env.action_space.n
-args=parser.parse_args()
+# sess=tf.compat.v1.Session()
+# # env=gym.make('LunarLander-v2')
+# n_s=env.observation_space.shape[0]
+# n_a=env.action_space.n
+# args=parser.parse_args()
 
-RL_agent=RL(sess=sess,
-	env=env,
-	n_s=n_s,
-	n_a=n_a,
-	args=args)
+# RL_agent=RL(sess=sess,
+# 	env=env,
+# 	n_s=n_s,
+# 	n_a=n_a,
+# 	args=args)
 
-RL_agent.train()
+# RL_agent.train()
