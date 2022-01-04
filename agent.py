@@ -244,7 +244,7 @@ class RL():
 				test.append(score)
 				if len(test) % self.release == 0 or (self.ite_count-1)==0:
 # 					self.saver.save(self.sess,r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training))
-					self.saver.save(self.sess,self.args.save_path+'\\'+'tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training)
+					self.saver.save(self.sess,self.args.save_path+'\\'+'tensorflow_model_{}_tensorflow_categorical_1.ckpt'.format(self.args.generate_per_single_training))
 # 					np.save(r'C:\Users\USER\Desktop\Upside down\new folder\result\memory_thersold\tensorflow_reward_test_{}_{}__tensorflow_categorical_1.npy'.format(self.save_index,self.args.generate_per_single_training),test)
 					print('saved')
 					self.save_index+=1
@@ -253,7 +253,7 @@ class RL():
 					start_ = time.time()
 
 sess=tf.compat.v1.Session()
-env=gym.make('LunarLander-v2')
+# env=gym.make('LunarLander-v2')
 n_s=env.observation_space.shape[0]
 n_a=env.action_space.n
 args=parser.parse_args()
